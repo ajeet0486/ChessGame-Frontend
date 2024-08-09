@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './Board.css';
-import Pawn from '../TilesPath/Pawn/Pawn';
 
 
 const initialBoard = [
@@ -51,23 +50,22 @@ const initialBoard = [
 
 const Board = () => {
   const [board, setBoard] = useState(initialBoard);
-  const [rowToPass,setRowToPass]=useState(null);
-  const [colToPass,setColToPass]=useState(null);
-  const [tileType,setTileType]=useState(null);
+  const [rowToPass, setRowToPass] = useState(null);
+  const [colToPass, setColToPass] = useState(null);
 
-  const handleDragStart = (event, row, col,tileType) => {
-    event.dataTransfer.setData('piece', JSON.stringify({ row, col,tileType }));
-    console.log(row*8+col+1) // position of square in board like 1 2 3 4
+  const handleDragStart = (event, row, col, tileType) => {
+    event.dataTransfer.setData('piece', JSON.stringify({ row, col, tileType }));
+    console.log(row * 8 + col + 1) // position of square in board like 1 2 3 4
   };
 
   const handleDrop = (event, row1, col1) => {
     event.preventDefault();
-    const { row: fromRow, col: fromCol} = JSON.parse(event.dataTransfer.getData('piece'));
+    const { row: fromRow, col: fromCol } = JSON.parse(event.dataTransfer.getData('piece'));
 
     setRowToPass(row1);
     setColToPass(col1);
 
-    console.log(row1*8+col1+1) // position of square in board like 1 2 3 4
+    console.log(row1 * 8 + col1 + 1) // position of square in board like 1 2 3 4
 
     if (fromRow !== row1 || fromCol !== col1) {
       const newBoard = [...board];
@@ -77,30 +75,25 @@ const Board = () => {
     }
   };
 
-  const validPath=(row,col,tileType)=>{
-    setRowToPass(row);
-    setColToPass(col);
-    setTileType(tileType);  
-  }
   const handleDragOver = (event) => {
     event.preventDefault();
   };
-  
-  
+
+
   return (
     <div className="board">
       {board.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           {row.map((square, colIndex) => (
             <div key={colIndex} className="square" id={`${rowIndex}${colIndex}`} onDrop={(event) => handleDrop(event, rowIndex, colIndex)} onDragOver={handleDragOver}>
-              <div className="piece" draggable onDragStart={(event) => handleDragStart(event, rowIndex, colIndex)} onClick={(e)=>validPath(rowIndex,colIndex,square.type)}>
-                {square?<img src={square.image} alt={square.type}/>:null}
+              <div className="piece" draggable onDragStart={(event) => handleDragStart(event, rowIndex, colIndex)}>
+                {square ? <img src={square.image} alt={square.type} /> : null}
               </div>
             </div>
           ))}
         </div>
       ))}
-      <Pawn board={board} row={rowToPass} col={colToPass} tileType={tileType}/>
+
       {rowToPass}
       {colToPass}
     </div>
